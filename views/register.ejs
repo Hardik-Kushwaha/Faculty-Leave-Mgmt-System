@@ -29,7 +29,7 @@ width: 40%;
 
 >     
 
-        <form action="/faculty/register" method="POST" 
+        <form action="/faculty/register" onsubmit="return validateForm(this)" method="POST" 
         style="margin: 0 auto;">
         <div class="row">
             <div class="col">
@@ -47,6 +47,7 @@ width: 40%;
                 padding-right: 20px;
                 ">Name</label>
                 <input
+                 required
                   class="form-control"
                   type="text"
                   id="name"
@@ -78,6 +79,7 @@ width: 40%;
                   padding-right: 20px;
                   ">Username</label>
                 <input
+                required
                   class="form-control"
                   type="text"
                   id="username"
@@ -93,12 +95,19 @@ width: 40%;
                   padding-right: 20px;
                   ">Password</label>
                 <input
+                required
                   class="form-control"
                   type="password"
                   name="password"
                   id="password"
                   placeholder="password"
                 />
+                <label for="password"style="width: 200px;
+                  display: inline-block;
+                  text-align: right;
+                  padding-left :70px
+                  "> Show Password</label>
+                <input style="padding-left :70px" type="checkbox" onchange="document.getElementById('password').type = this.checked ? 'text' : 'password'">
               </div>
               <!-- confirm password -->
               <div class="form-group form-inline">
@@ -108,12 +117,15 @@ width: 40%;
                   padding-right: 20px;
                   ">Confirm Password</label>
                 <input
+                required
                   class="form-control"
                   type="password"
                   id="cpassword"
                   name="password2"
                   placeholder="confirm password"
+                  onkeyup="myFunction()"
                 />
+                <i class="bi bi-eye-slash" id="toggleconfirmPassword"></i>
               </div>
               <!-- Department -->
               <div class="form-group form-inline">
@@ -125,7 +137,7 @@ width: 40%;
                 <!-- <label for="department">Department</label> -->
                 <input
                   class="form-control"
-                  
+                  required
                   type="text"
                   placeholder="Department"
                   id="department"
@@ -156,6 +168,7 @@ width: 40%;
                   padding-right: 20px;
                   ">Image URL</label>
                 <input
+                
                   class="form-control"
                   type="text"
                   id="img"
@@ -169,6 +182,7 @@ width: 40%;
                   type="submit"
                   class="btn btn-lg btn-primary btn-default btn-block"
                   style=" color:#fff;"
+                  
                 >
                   Submit
                 </button>
@@ -178,7 +192,7 @@ width: 40%;
           <!-- name -->
         </form>
 
-        <a style="padding-left: 30px;" href="/"><b>Back</b></a>
+        <a style="padding: 50px;" href="/"><b>Back</b></a>
       </div>
     </div>
   </div>
