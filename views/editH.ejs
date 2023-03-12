@@ -1,12 +1,18 @@
 <% include ./partial/header %>
+<body style="
+background-image: url('https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80');
+background-repeat: no-repeat;
+background-size: cover;
+">
+</body>
 <div
   class="container"
   style=" position: relative;
-border-radius: 5px;
-background-color: #f2f2f2;
-padding: 20px 0 30px 0;
 width: 40%;
-
+border-radius: 25px;
+background-color: #f2f2f2;
+padding: 20px 0 0 0;
+margin: 100px auto;
 "
 >
   
@@ -18,7 +24,8 @@ width: 40%;
                 <label for="name" style="width: 200px;
                 display: inline-block;
                 text-align: right;
-                ">Name</label>
+                padding-right: 20px;
+                ">Name: </label>
               <input
                 class="form-control"
                 type="text"
@@ -31,7 +38,8 @@ width: 40%;
                 <label for="username" style="width: 200px;
                 display: inline-block;
                 text-align: right;
-                ">Username</label>
+                padding-right: 20px;
+                ">Username:</label>
               <input
                 class="form-control"
                 type="text"
@@ -44,7 +52,8 @@ width: 40%;
                 <label for="department" style="width: 200px;
                 display: inline-block;
                 text-align: right;
-                ">Department</label>
+                padding-right: 20px;
+                ">Department:</label>
               <input
                 class="form-control"
                 type="text"
@@ -58,7 +67,8 @@ width: 40%;
                 <label for="url" style="width: 200px;
                 display: inline-block;
                 text-align: right;
-                ">Image Url</label>
+                padding-right: 20px;
+                ">Image URL:</label>
               <input
                 class="form-control"
                 type="text"
@@ -73,7 +83,7 @@ width: 40%;
           </div>
         </div>
       </form>
-      <a href="/hod/profile">Back</a>
+      <a style="padding: 50px;" href="/hod/profile"><b>Back</b></a>
     </div>
   </div>
 </div>
