@@ -13,8 +13,26 @@
   integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
   crossorigin="anonymous"
 ></script>
-
-
 <script src="https://kit.fontawesome.com/bb2b450143.js"></script>
+<script>
+   function validateForm(form) { 
+        if (form['name'].value.match(/[0-9]/)) { 
+            alert("Avoid numbers in the name field, please."); 
+            form['name'].focus(); 
+            return false; 
+        } 
+        return true; 
+      }  
+</script>
+<script>
+  function myFunction() {
+  var password = document.querySelector('input[name=password]').value;
+  var confirm = document.querySelector('input[name=password2]').value;
+  var matchedOrNot = (confirm == password) ? "Password matched" : "Password not matched"; 
+  var color = (matchedOrNot == "Password matched") ? "green" : "red";
+  document.getElementById("toggleconfirmPassword").className = color;
+  document.getElementById("toggleconfirmPassword").innerHTML = matchedOrNot;
+}
+</script>
 </body>
 </html>

@@ -13,10 +13,8 @@ var express = require("express"),
   Accounts = require("./models/accounts"),
   Hod = require("./models/hod"),
   Leave = require("./models/leave");
-
-var moment = require("moment");
-
-var url =process.env.DATABASEURL||"mongodb+srv://root:root@cluster0.einlbbo.mongodb.net/test";
+ var moment = require("moment");
+ var url =process.env.DATABASEURL||"mongodb+srv://root:root@cluster0.einlbbo.mongodb.net/test";
 mongoose
   .connect(url, {
     useNewUrlParser: true,
