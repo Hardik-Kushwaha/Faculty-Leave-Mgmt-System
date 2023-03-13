@@ -697,7 +697,7 @@ app.get("/accounts/:id", ensureAuthenticated, (req, res) => {
 });
 app.get("/accounts/:id/edit", ensureAuthenticated, (req, res) => {
   Accounts.findById(req.params.id, (err, foundAccounts) => {
-    res.render("editW", { accounts: foundAccounts });
+    res.render("editA", { accounts: foundAccounts });
   });
 });
 
@@ -721,26 +721,9 @@ app.put("/accounts/:id", ensureAuthenticated, (req, res) => {
 app.get("/accounts/:id/leave", (req, res) => {
   Accounts.findById(req.params.id).exec((err, accountsFound) => {
     if (err) {
-      req.flash("error", "hod not found with requested id");
+      req.flash("error", " Acc found with requested id");
       res.redirect("back");
-    } /*else {
-      // console.log(hodFound);
-      Faculty.find({ hostel: accountsFound.hostel })
-        .populate("leaves")
-        .exec((err, facultys) => {
-          if (err) {
-            req.flash("error", "faculty not found with your department");
-            res.redirect("back");
-          } else {
-            res.render("accountsLeaveSign", {
-              accounts: accountsFound,
-              facultys: facultys,
-
-              moment: moment
-            });
-          }
-        });
-    }*/
+    }
   });
 });
 app.get("/accounts/:id/leave/:stud_id/info", (req, res) => {

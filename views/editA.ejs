@@ -7,17 +7,18 @@ background-size: cover;
 </body>
 <div class="container"
 style=" position: relative;
-border-radius: 5px;
+border-radius: 25px;
 background-color: #f2f2f2;
 padding: 20px 0 30px 0;
 width: 40%;
+margin: 100px auto;
 
 ">
   
       <form action="/accounts/<%=accounts._id%>?_method=PUT" method="POST">
         <div class="row">
           <div class="col">
-            <h1 style="text-align:center;">Edit Profile<%= accounts.name%></h1>
+            <h1 style="text-align:center;">Edit Profile<%=accounts.name%></h1>
             <div class="form-group form-inline">
               <label
                 for="name"
