@@ -395,7 +395,7 @@ app.get("/faculty/:id", ensureAuthenticated, (req, res) => {
 });
 app.get("/faculty/:id/edit", ensureAuthenticated, (req, res) => {
   Faculty.findById(req.params.id, (err, foundFaculty) => {
-    res.render("editS", { faculty: foundFaculty });
+    res.render("editF", { faculty: foundFaculty });
   });
 });
 app.put("/faculty/:id", ensureAuthenticated, (req, res) => {
