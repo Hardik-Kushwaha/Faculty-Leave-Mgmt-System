@@ -393,7 +393,7 @@ app.get("/faculty/:id", ensureAuthenticated, (req, res) => {
 });
 app.get("/faculty/:id/edit", ensureAuthenticated, (req, res) => {
   Faculty.findById(req.params.id, (err, foundFaculty) => {
-    res.render("editS", { faculty: foundFaculty });
+    res.render("editF", { faculty: foundFaculty });
   });
 });
 app.put("/faculty/:id", ensureAuthenticated, (req, res) => {
@@ -695,7 +695,7 @@ app.get("/accounts/:id", ensureAuthenticated, (req, res) => {
 });
 app.get("/accounts/:id/edit", ensureAuthenticated, (req, res) => {
   Accounts.findById(req.params.id, (err, foundAccounts) => {
-    res.render("editW", { accounts: foundAccounts });
+    res.render("editA", { accounts: foundAccounts });
   });
 });
 
