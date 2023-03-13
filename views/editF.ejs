@@ -1,11 +1,18 @@
 <% include ./partial/header %>
+<body style="
+background-image: url('https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80');
+background-repeat: no-repeat;
+background-size: cover;
+">
+</body>
 <div
   class="container"
   style=" position: relative;
-border-radius: 5px;
-background-color: #f2f2f2;
-padding: 60px 0 30px 0;
 width: 40%;
+border-radius: 25px;
+background-color: #f2f2f2;
+padding: 20px 0 0 0;
+margin: 100px auto;
 
 "
 >
@@ -15,12 +22,17 @@ width: 40%;
       <form action="/faculty/<%=faculty._id%>?_method=PUT" method="POST" style="margin-top: 20px;">
         <div class="row">
           <div class="col">
+<<<<<<< HEAD:views/editF.ejs
               <h1 style="text-align:center;">Edit Profile <%= faculty.name%></h1>
+=======
+              <h1 style="text-align:center;">Edit Profile <%=facultyname%></h1>
+>>>>>>> 7c58355f91a10a7b26e5fd7d692c6b76ba2c1585:views/editS.ejs
               <div class=" form-group form-inline">
                   <label for="name" style="width: 200px;
                   display: inline-block;
+                  padding-right: 20px;
                   text-align: right;
-                  ">Name</label>
+                  ">Name:</label>
                   <input
                     class="form-control"
                     type="text"
@@ -33,7 +45,8 @@ width: 40%;
                     <label for="username" style="width: 200px;
                     display: inline-block;
                     text-align: right;
-                    ">Username</label>
+                    padding-right: 20px;
+                    ">Username:</label>
                   <input
                     class="form-control"
                     type="text"
@@ -46,7 +59,8 @@ width: 40%;
                     <label for="department" style="width: 200px;
                     display: inline-block;
                     text-align: right;
-                    ">Department</label>
+                    padding-right: 20px;
+                    ">Department:</label>
                   <input
                     class="form-control"
                     type="text"
@@ -73,7 +87,8 @@ width: 40%;
                     <label for="url" style="width: 200px;
                     display: inline-block;
                     text-align: right;
-                    ">Image-url</label>
+                    padding-right: 20px;
+                    ">Image-URL</label>
                   <input
                     class="form-control"
                     type="text"
@@ -89,7 +104,7 @@ width: 40%;
         </div>
         
       </form>
-      <a href="/faculty/<%= faculty.id%>">Back</a>
+      <a style="padding: 50px;" href="/faculty/<%= faculty.id%>">Back</a>
     </div>
   </div>
 </div>

@@ -8,7 +8,10 @@ var hodSchema = new mongoose.Schema({
   username: String,
   password: String,
   department: String,
-  image: String,
+  image: {
+    type: String,
+    default: 'https://example.com/cute-pusheen.jpg'
+  },
   leaves: [
     {
       type: mongoose.Schema.Types.ObjectId,
