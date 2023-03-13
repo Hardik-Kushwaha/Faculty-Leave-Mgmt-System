@@ -13,8 +13,10 @@ var express = require("express"),
   Accounts = require("./models/accounts"),
   Hod = require("./models/hod"),
   Leave = require("./models/leave");
- var moment = require("moment");
- var url =process.env.DATABASEURL||"mongodb+srv://root:root@cluster0.einlbbo.mongodb.net/test";
+
+var moment = require("moment");
+
+var url =process.env.DATABASEURL||"mongodb+srv://root:root@cluster0.einlbbo.mongodb.net/test";
 mongoose
   .connect(url, {
     useNewUrlParser: true,
@@ -106,10 +108,6 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/about", (req, res) => {
-  res.render("about");
-});
-
 //login logic for Faculty
 
 //login logic for Hod
@@ -139,7 +137,6 @@ app.post("/faculty/register", (req, res) => {
     //validation
     req.checkBody("name", "name is required").notEmpty();
     req.checkBody("username", "Username is required").notEmpty();
-   
     req.checkBody("department", "department is required").notEmpty();
     req.checkBody("password", "Password is required").notEmpty();
     req.checkBody("password2", "Password dont match").equals(req.body.password);
@@ -494,6 +491,11 @@ app.get("/hod/login", (req, res) => {
   res.render("hodlogin");
 });
 
+app.get("/about", (req, res) => {
+  res.render("about");
+});
+
+
 app.post(
   "/hod/login",
   passport.authenticate("hod", {
@@ -697,7 +699,7 @@ app.get("/accounts/:id", ensureAuthenticated, (req, res) => {
 });
 app.get("/accounts/:id/edit", ensureAuthenticated, (req, res) => {
   Accounts.findById(req.params.id, (err, foundAccounts) => {
-    res.render("editA", { accounts: foundAccounts });
+    res.render("editW", { accounts: foundAccounts });
   });
 });
 
@@ -721,8 +723,25 @@ app.put("/accounts/:id", ensureAuthenticated, (req, res) => {
 app.get("/accounts/:id/leave", (req, res) => {
   Accounts.findById(req.params.id).exec((err, accountsFound) => {
     if (err) {
-      req.flash("error", " Acc found with requested id");
+      req.flash("error", "hod not found with requested id");
       res.redirect("back");
+    } else {
+      // console.log(hodFound);
+      Faculty.find()
+        .populate("leaves")
+        .exec((err, facultys) => {
+          if (err) {
+            req.flash("error", "faculty not found with your department");
+            res.redirect("back");
+          } else {
+            res.render("accountsLeaveSign", {
+              accounts: accountsFound,
+              facultys: facultys,
+
+              moment: moment
+            });
+          }
+        });
     }
   });
 });
@@ -763,6 +782,7 @@ app.post("/accounts/:id/leave/:stud_id/info", (req, res) => {
             req.flash("error", "faculty not found with this id");
             res.redirect("back");
           } else {
+            //TODO: Fix this error get id with approve req and findById and update leave.accountsstatus = "approved" do not use forEach
             if (req.body.action === "Approve") {
               foundFaculty.leaves.forEach(function(leave) {
                 if (leave.accountsstatus === "pending") {
