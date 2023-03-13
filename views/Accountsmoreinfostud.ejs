@@ -1,7 +1,10 @@
 <% include ./partial/header %>
 <div
-  class="col-sm-9"
-  style="margin: 50px 125px;    text-align: -webkit-center; border: 1px solid purple"
+  class="col-sm-6"
+  style="    flex: 0 0 50%;
+    max-width: 60%;
+    margin-left: 300px;
+    margin-top: 80px;  text-align: -webkit-center;"
 >
   <form
     action="/accounts/<%=accounts.id%>/leave/<%=faculty.id%>/info"
@@ -9,14 +12,14 @@
   >
     <div
       class="container-fluid bg-3 text-center"
-      style="border: 1px solid blue"
+      style="border: 2px solid rgb(88, 88, 150)"
     >
       <h1><%=faculty.name %></h1>
       <br />
       <div class="row">
         <div class="col-sm-4">
           <img
-            style="border-radius: 100%"
+            style="border-radius: 50%; width: 100%;"
             src="<%=faculty.image%>"
             alt="image"
           />
@@ -43,6 +46,7 @@
               name="action"
               value="Decline"
             />
+            <a href="/accounts/home">Back</a>
           </div>
         </div>
 
