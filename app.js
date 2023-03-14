@@ -13,8 +13,9 @@ var express = require("express"),
   Accounts = require("./models/accounts"),
   Hod = require("./models/hod"),
   Leave = require("./models/leave");
-
+  require('dotenv').config;
 var moment = require("moment");
+const multer = require('multer');
 
 var url =process.env.DATABASEURL||"mongodb+srv://root:root@cluster0.einlbbo.mongodb.net/test";
 mongoose
@@ -48,6 +49,49 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+// multer
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null,'./public/images/uploads')
+  },
+  filename: function (req, file, cb) {
+    var filename = Date.now() + Math.floor(Math.random()*1000000) + file.originalname;
+    cb(null,filename)
+   
+  }
+})
+// for file filtering 
+function fileFilter (req, file, cb) {
+
+  if(file.mimetype=== 'image/png' || file.mimetype=== 'image/jpg' || file.mimetype=== 'image/jpeg' ||file.mimetype=== 'image/webp'){
+    cb(null, true)
+  }else{
+    cb(new Error('Bhai tejj mt chal ....'));
+  }
+}
+
+const upload = multer({ storage: storage ,fileFilter: fileFilter})
+
+/* GET home page. */
+// FOR PROFILE PHOTO UPLOAD
+// profile ROUTE RENDERING
+app.get('/profile', function(req, res) {
+  res.render('profile');
+});
+app.post('/image' ,upload.single('image'), function(req,res){
+  Hod.findOne({id: req.params.id})
+  .then(function(user2){
+   user2.image= req.file.filename;
+   user2.save()
+  .then(function(){
+    res.send("done")
+  })
+ })
+ });
+
 // passport.use(new LocalStrategy(Faculty.authenticate()));
 // passport.use(
 //   new LocalStrategy(function(username, password, done) {
@@ -108,10 +152,12 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
+
+app.get("/admin", (req, res) => {
+   res.render("admin")
+});
 //login logic for Faculty
-
 //login logic for Hod
-
 // passport.serializeUser(function(hod, done) {
 //   done(null, hod.id);
 // });
@@ -173,7 +219,7 @@ app.post("/faculty/register", (req, res) => {
     var password = req.body.password;
     var password2 = req.body.password2;
     var department = req.body.department;
-    var image = req.body.image;
+    // var image = req.body.image;
 
     req.checkBody("name", "Name is required").notEmpty();
     req.checkBody("username", "Username is required").notEmpty();
@@ -193,7 +239,7 @@ app.post("/faculty/register", (req, res) => {
         password: password,
         department: department,
         type: type,
-        image: image
+        // image: image
       });
       Hod.createHod(newHod, (err, hod) => {
         if (err) throw err;
