@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 var bcrypt = require("bcryptjs");
 var passportLocalMongoose = require("passport-local-mongoose");
 
-var accountsSchema = new mongoose.Schema({
+var principalSchema = new mongoose.Schema({
   name: String,
   type: String,
   username: String,
@@ -10,25 +10,25 @@ var accountsSchema = new mongoose.Schema({
   image: String
 });
 
-accountsSchema.plugin(passportLocalMongoose);
-var Accounts = (module.exports = mongoose.model("Accounts", accountsSchema));
+principalSchema.plugin(passportLocalMongoose);
+var Principal = (module.exports = mongoose.model("Principal", principalSchema));
 
-module.exports.createAccounts = function(newAccounts, callback) {
+module.exports.createPrincipal = function(newPrincipal, callback) {
   bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(newAccounts.password, salt, function(err, hash) {
-      newAccounts.password = hash;
-      newAccounts.save(callback);
+    bcrypt.hash(newPrincipal.password, salt, function(err, hash) {
+      newPrincipal.password = hash;
+      newPrincipal.save(callback);
     });
   });
 };
 
 module.exports.getUserByUsername = function(username, callback) {
   var query = { username: username };
-  Accounts.findOne(query, callback);
+  Principal.findOne(query, callback);
 };
 
 module.exports.getUserById = function(id, callback) {
-  Accounts.findById(id, callback);
+  Principal.findById(id, callback);
 };
 
 module.exports.comparePassword = function(candidatePassword, hash, callback) {

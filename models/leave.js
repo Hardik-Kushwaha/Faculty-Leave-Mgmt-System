@@ -10,7 +10,7 @@ var leaveSchema = new mongoose.Schema(
       enum: ["pending", "approved", "denied"],
       default: "pending"
     },
-    accountsstatus: {
+    principalstatus: {
       type: String,
       enum: ["pending", "approved", "denied"],
       default: "pending"
