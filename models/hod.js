@@ -10,7 +10,7 @@ var hodSchema = new mongoose.Schema({
   department: String,
   image: {
     type: String,
-    default: 'https://example.com/cute-pusheen.jpg'
+    // default: 'https://example.com/cute-pusheen.jpg'
   },
   leaves: [
     {
