@@ -10,7 +10,6 @@ var express = require("express"),
   passportLocalMongoose = require("passport-local-mongoose"),
   flash = require("connect-flash"),
   Faculty = require("./models/faculty"),
-  Accounts = require("./models/accounts"),
   Principal = require("./models/principal"),
   Hod = require("./models/hod"),
   Leave = require("./models/leave");
@@ -266,43 +265,7 @@ app.post("/faculty/register", (req, res) => {
 
       res.redirect("/hod/login");
     }
-  } else if (type == "accounts") {
-    var name = req.body.name;
-    var username = req.body.username;
-    var password = req.body.password;
-    var password2 = req.body.password2;
-
-    var image = req.body.image;
-
-    req.checkBody("name", "Name is required").notEmpty();
-    req.checkBody("username", "Username is required").notEmpty();
-    req.checkBody("password", "password is required").notEmpty();
-    req.checkBody("password2", "Password dont match").equals(req.body.password);
-
-    var errors = req.validationErrors();
-    if (errors) {
-      res.render("register", {
-        errors: errors
-      });
-    } else {
-      var newAccounts = new Accounts({
-        name: name,
-        username: username,
-        password: password,
-
-        type: type,
-        image: image
-      });
-      Accounts.createAccounts(newAccounts, (err, accounts) => {
-        if (err) throw err;
-        console.log(accounts);
-      });
-      req.flash("success", "you are registered successfully,now you can login");
-
-      res.redirect("/accounts/login");
-    }
-  }
-  else if (type == "principal") {
+  } else if (type == "principal") {
     var name = req.body.name;
     var username = req.body.username;
     var password = req.body.password;
@@ -386,29 +349,6 @@ passport.use(
 );
 
 passport.use(
-  "accounts",
-  new LocalStrategy((username, password, done) => {
-    Accounts.getUserByUsername(username, (err, accounts) => {
-      if (err) throw err;
-      if (!accounts) {
-        return done(null, false, { message: "Unknown User" });
-      }
-      Accounts.comparePassword(
-        password,
-        accounts.password,
-        (err, passwordFound) => {
-          if (err) throw err;
-          if (passwordFound) {
-            return done(null, accounts);
-          } else {
-            return done(null, false, { message: "Invalid Password" });
-          }
-        }
-      );
-    });
-  })
-);
-passport.use(
   "principal",
   new LocalStrategy((username, password, done) => {
     Principal.getUserByUsername(username, (err, principal) => {
@@ -431,6 +371,7 @@ passport.use(
     });
   })
 );
+
 //serialize
 
 passport.serializeUser(function(user, done) {
@@ -452,15 +393,11 @@ passport.deserializeUser(function(obj, done) {
         done(err, hod);
       });
       break;
-    case "accounts":
-      Accounts.getUserById(obj.id, function(err, accounts) {
-        done(err, accounts);
-      });
-      break;
-      case "principal":
-        Principal.getUserById(obj.id, function(err, principal) {
+    case "principal":
+      Principal.getUserById(obj.id, function(err, principal) {
         done(err, principal);
       });
+      break;
     default:
       done(new Error("no entity type:", obj.type), null);
       break;
@@ -784,158 +721,6 @@ app.post("/hod/:id/leave/:stud_id/info", (req, res) => {
   });
 });
 
-app.get("/accounts/login", (req, res) => {
-  res.render("accountslogin");
-});
-
-app.post(
-  "/accounts/login",
-  passport.authenticate("accounts", {
-    successRedirect: "/accounts/home",
-    failureRedirect: "/accounts/login",
-    failureFlash: true
-  }),
-  (req, res) => {
-    res.redirect("/accounts/home");
-  }
-);
-app.get("/accounts/home", ensureAuthenticated, (req, res) => {
-  Accounts.find({}, (err, hod) => {
-    if (err) {
-      console.log("err");
-    } else {
-      res.render("homeaccounts", {
-        accounts: req.user
-      });
-    }
-  });
-});
-
-app.get("/accounts/:id", ensureAuthenticated, (req, res) => {
-  console.log(req.params.id);
-  Accounts.findById(req.params.id).exec((err, foundAccounts) => {
-    if (err || !foundAccounts) {
-      req.flash("error", "Accounts not found");
-      res.redirect("back");
-    } else {
-      res.render("profileaccounts", { accounts: foundAccounts });
-    }
-  });
-});
-app.get("/accounts/:id/edit", ensureAuthenticated, (req, res) => {
-  Accounts.findById(req.params.id, (err, foundAccounts) => {
-    res.render("editA", { accounts: foundAccounts });
-  });
-});
-
-app.put("/accounts/:id", ensureAuthenticated, (req, res) => {
-  console.log(req.body.accounts);
-  Accounts.findByIdAndUpdate(
-    req.params.id,
-    req.body.accounts,
-    (err, updatedAccounts) => {
-      if (err) {
-        req.flash("error", err.message);
-        res.redirect("back");
-      } else {
-        req.flash("success", "Succesfully updated");
-        res.redirect("/accounts/" + req.params.id);
-      }
-    }
-  );
-});
-
-app.get("/accounts/:id/leave", (req, res) => {
-  Accounts.findById(req.params.id).exec((err, accountsFound) => {
-    if (err) {
-      req.flash("error", "hod not found with requested id");
-      res.redirect("back");
-    } else {
-      // console.log(hodFound);
-      Faculty.find()
-        .populate("leaves")
-        .exec((err, facultys) => {
-          if (err) {
-            req.flash("error", "faculty not found with your department");
-            res.redirect("back");
-          } else {
-            res.render("accountsLeaveSign", {
-              accounts: accountsFound,
-              facultys: facultys,
-
-              moment: moment
-            });
-          }
-        });
-    }
-  });
-});
-app.get("/accounts/:id/leave/:stud_id/info", (req, res) => {
-  Accounts.findById(req.params.id).exec((err, accountsFound) => {
-    if (err) {
-      req.flash("error", "accounts not found with requested id");
-      res.redirect("back");
-    } else {
-      Faculty.findById(req.params.stud_id)
-        .populate("leaves")
-        .exec((err, foundFaculty) => {
-          if (err) {
-            req.flash("error", "faculty not found with this id");
-            res.redirect("back");
-          } else {
-            res.render("Accountsmoreinfostud", {
-              faculty: foundFaculty,
-              accounts: accountsFound,
-              moment: moment
-            });
-          }
-        });
-    }
-  });
-});
-
-app.post("/accounts/:id/leave/:stud_id/info", (req, res) => {
-  Accounts.findById(req.params.id).exec((err, accountsFound) => {
-    if (err) {
-      req.flash("error", "accounts not found with requested id");
-      res.redirect("back");
-    } else {
-      Faculty.findById(req.params.stud_id)
-        .populate("leaves")
-        .exec((err, foundFaculty) => {
-          if (err) {
-            req.flash("error", "faculty not found with this id");
-            res.redirect("back");
-          } else {
-            //TODO: Fix this error get id with approve req and findById and update leave.accountsstatus = "approved" do not use forEach
-            if (req.body.action === "Approve") {
-              foundFaculty.leaves.forEach(function(leave) {
-                if (leave.accountsstatus === "pending") {
-                  leave.accountsstatus = "approved";
-
-                  leave.save();
-                }
-              });
-            } else {
-              console.log("u denied");
-              foundFaculty.leaves.forEach(function(leave) {
-                if (leave.accountsstatus === "pending") {
-                  leave.accountsstatus = "denied";
-
-                  leave.save();
-                }
-              });
-            }
-            res.render("Accountsmoreinfostud", {
-              faculty: foundFaculty,
-              accounts: accountsFound,
-              moment: moment
-            });
-          }
-        });
-    }
-  });
-});
 app.get("/principal/login", (req, res) => {
   res.render("principallogin");
 });
@@ -1088,6 +873,7 @@ app.post("/principal/:id/leave/:stud_id/info", (req, res) => {
     }
   });
 });
+
 //logout for faculty
 
 app.get("/logout", (req, res) => {
