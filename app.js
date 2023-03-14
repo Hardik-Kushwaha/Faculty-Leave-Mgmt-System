@@ -503,7 +503,6 @@ app.get("/faculty/:id/apply", ensureAuthenticated, (req, res) => {
     }
   });
 });
-
 app.post("/faculty/:id/apply", (req, res) => {
   Faculty.findById(req.params.id)
     .populate("leaves")
@@ -513,11 +512,19 @@ app.post("/faculty/:id/apply", (req, res) => {
       } else {
         date = new Date(req.body.leave.from);
         todate = new Date(req.body.leave.to);
+        today = new Date();
+
+        // check if date is in the past
+        if (date < today) {
+          req.flash("error", "Leave date cannot be in the past");
+          res.redirect("back");
+          return;
+        }
+
         year = date.getFullYear();
         month = date.getMonth() + 1;
         dt = date.getDate();
         todt = todate.getDate();
-
         if (dt < 10) {
           dt = "0" + dt;
         }
@@ -532,6 +539,22 @@ app.post("/faculty/:id/apply", (req, res) => {
         // var from = new Date(req.body.leave.from);
         // from.toISOString().substring(0, 10);
         // console.log("from date:", strDate);
+        switch (req.body.leave.type) {
+          case "ol":
+            faculty.leaveCounts.ol -= req.body.leave.days;
+            break;
+          case "dl":
+            faculty.leaveCounts.dl -= req.body.leave.days;
+            break;
+          case "ml":
+            faculty.leaveCounts.ml -= req.body.leave.days;
+            break;
+          case "cd":
+            faculty.leaveCounts.cd -= req.body.leave.days;
+            break;
+          default:
+            break;
+        }
         Leave.create(req.body.leave, (err, newLeave) => {
           if (err) {
             req.flash("error", "Something went wrong");
@@ -552,6 +575,7 @@ app.post("/faculty/:id/apply", (req, res) => {
       }
     });
 });
+
 app.get("/faculty/:id/track", (req, res) => {
   Faculty.findById(req.params.id)
     .populate("leaves")
