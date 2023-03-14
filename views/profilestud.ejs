@@ -6,13 +6,18 @@
     margin-left: 431px;
     margin-top: -181px; text-align: -webkit-center;">
       <div class="thumbnail">
-        <img  style="height:150px;width:150px;border-radius: 100%" src="<%=faculty.image%>" />
+        <img  style="height:150px;width:150px;border-radius: 100%" src="../images/uploads/<%=faculty.image%>" />
         <h1><strong>Name:</strong> <%=faculty.name%></h1>
         <h4><strong>Type:</strong><%=faculty.type%></h4>
 
         <h4>Username: <%=faculty.username%></h4>
         <h4>Department:<%=faculty.department%></h4>
       </div>
+      <% if(faculty.image.length === 0){ %>
+        <a href="/facimage">upload Profile pic</a><br><br>
+     <% }else{ %>
+      <a href="/facimage">Change Profile pic</a><br><br>
+     <% } %>
       <a class="btn btn-warning" href="/faculty/<%=faculty._id%>/edit">Edit</a>
     </div>
   </div>
