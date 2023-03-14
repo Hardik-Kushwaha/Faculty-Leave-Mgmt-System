@@ -10,12 +10,29 @@ var facultySchema = new mongoose.Schema({
   department: String,
   hostel: String,
   image: String,
+  ol : {
+    type : Number,
+    default : 10
+  },
+  dl : {
+    type : Number,
+    default : 10
+  },
+  ml : {
+    type : Number,
+    default : 10
+  },
+  cd:{
+    type : Number,
+    default : 10
+  },
   leaves: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Leave"
     }
   ]
+
 });
 facultySchema.plugin(passportLocalMongoose);
 var Faculty = (module.exports = mongoose.model("Faculty", facultySchema));

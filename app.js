@@ -196,6 +196,7 @@ app.post("/faculty/register", (req, res) => {
     var password = req.body.password;
     var password2 = req.body.password2;
     var department = req.body.department;
+    
     // var image = req.body.image;
     //validation
     req.checkBody("name", "name is required").notEmpty();
@@ -584,13 +585,10 @@ app.post("/faculty/:id/apply", (req, res) => {
           } else {
             newLeave.stud.id = req.user._id;
             newLeave.stud.username = req.user.username;
-            console.log("leave is applied by--" + req.user.username);
-
+            console.log("leave is applied by--" + req.user.username);    
             // console.log(newLeave.from);
             newLeave.save();
-
             faculty.leaves.push(newLeave);
-
             faculty.save();
             req.flash("success", "Successfully applied for leave");
             res.render("homestud", { faculty: faculty, moment: moment });
