@@ -847,7 +847,6 @@ app.post("/principal/:id/leave/:stud_id/info", (req, res) => {
               foundFaculty.leaves.forEach(function(leave) {
                 if (leave.principalstatus === "pending") {
                   leave.principalstatus = "approved";
-
                   leave.save();
                 }
               });
