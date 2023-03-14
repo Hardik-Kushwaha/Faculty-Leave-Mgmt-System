@@ -87,7 +87,7 @@ app.post('/image' ,upload.single('image'), function(req,res){
    user2.image= req.file.filename;
    user2.save()
   .then(function(){
-    res.send("done")
+   res.redirect('back');
   })
  })
  });

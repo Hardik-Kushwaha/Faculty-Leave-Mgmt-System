@@ -9,14 +9,26 @@ margin-top: -181px;  text-align: -webkit-center;"
 >
   <h1>Apply for leave here <%=faculty.name%></h1>
   <form action="/faculty/<%=faculty._id%>/apply" method="POST">
-    <div class="form-group">
-      <input
+    <!-- <div class="form-group">
+       <input
         type="text"
         placeholder="subject"
         name="leave[subject]"
         class="form-control"
-      />
+      /> 
+
+    </div> -->
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Dropdown button
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
     </div>
+    
     <div class="form-group">
       <label for="from">From:</label>
       <input
