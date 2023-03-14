@@ -1,10 +1,10 @@
-<% include ./partial/header %>
+<% include ./partial/header %> <% include ./partial/accountsfunction%>
 <div
   class="col-sm-6"
   style="    flex: 0 0 50%;
     max-width: 60%;
-    margin-left: 300px;
-    margin-top: 80px;  text-align: -webkit-center;"
+    margin-left: 431px;
+    margin-top: -251px;  text-align: -webkit-center;"
 >
   <form
     action="/accounts/<%=accounts.id%>/leave/<%=faculty.id%>/info"
@@ -13,7 +13,7 @@
     <div
       class="container-fluid bg-3 text-center"
     >
-      <h1><%=faculty.name %></h1>
+      <h1 style="margin-top: 40px;"><%=faculty.name %></h1>
       <br />
       <div class="row">
         <div class="col-sm-4">
@@ -56,9 +56,9 @@
         </div>
         
         <%})%>
-        <a href="/accounts/<%=accounts._id%>/leave">Back</a>
       </div>
     </div>
+    <a href="/accounts/<%=accounts._id%>/leave">Back</a>
   </form>
 </div>
 <% include ./partial/footer %>
