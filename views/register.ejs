@@ -107,7 +107,7 @@ width: 40%;
                   text-align: right;
                   padding-left :70px
                   "> Show Password</label>
-                <input style="padding-left :70px" type="checkbox" onchange="document.getElementById('password').type = this.checked ? 'text' : 'password'">
+                <input style="padding-left :70px"  type="checkbox" onchange="document.getElementById('password').type = this.checked ? 'text' : 'password'">
               </div>
               <!-- confirm password -->
               <div class="form-group form-inline">
@@ -125,6 +125,7 @@ width: 40%;
                   placeholder="confirm password"
                   onkeyup="myFunction()"
                 />
+                <div id="error-nwl"></div>
                 <i class="bi bi-eye-slash" id="toggleconfirmPassword"></i>
               </div>
               <!-- Department -->

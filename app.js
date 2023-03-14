@@ -13,11 +13,11 @@ var express = require("express"),
   Principal = require("./models/principal"),
   Hod = require("./models/hod"),
   Leave = require("./models/leave");
-  require('dotenv').config;
+require('dotenv').config;
 var moment = require("moment");
 const multer = require('multer');
 
-var url =process.env.DATABASEURL||"mongodb+srv://root:root@cluster0.einlbbo.mongodb.net/test";
+var url = process.env.DATABASEURL || "mongodb+srv://root:root@cluster0.einlbbo.mongodb.net/test";
 mongoose
   .connect(url, {
     useNewUrlParser: true,
@@ -55,47 +55,48 @@ app.use(passport.session());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null,'./public/images/uploads')
+    cb(null, './public/images/uploads')
   },
   filename: function (req, file, cb) {
-    var filename = Date.now() + Math.floor(Math.random()*1000000) + file.originalname;
-    cb(null,filename)
-   
+    var filename = Date.now() + Math.floor(Math.random() * 1000000) + file.originalname;
+    cb(null, filename)
+
   }
 })
 // for file filtering 
-function fileFilter (req, file, cb) {
+function fileFilter(req, file, cb) {
 
-  if(file.mimetype=== 'image/png' || file.mimetype=== 'image/jpg' || file.mimetype=== 'image/jpeg' ||file.mimetype=== 'image/webp'){
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/webp') {
     cb(null, true)
-  }else{
+  } else {
     cb(new Error('Bhai tejj mt chal ....'));
   }
 }
 
-const upload = multer({ storage: storage ,fileFilter: fileFilter})
+const upload = multer({ storage: storage, fileFilter: fileFilter })
 
 /* GET home page. */
 // FOR PROFILE PHOTO UPLOAD
 // profile ROUTE RENDERING
-app.get('/profile', function(req, res) {
+app.get('/profile', function (req, res) {
   res.render('profile');
 });
-app.post('/image' ,upload.single('image'), function(req,res){
-  Hod.findOne({id: req.params.id})
-  .then(function(user2){
-   user2.image= req.file.filename;
-   user2.save()
-  .then(function(){
-   res.redirect('back');
-  })
- })
- });
+app.post('/image', upload.single('image'), function (req, res) {
+  Hod.findOne({ id: req.params.id })
+    .then(function (user2) {
+      user2.image = req.file.filename;
+      user2.save()
+        .then(function () {
+          res.redirect('back');
+        })
+    })
+});
 
- app.get('/facimage', function(req, res) {
+app.get('/facimage', function (req, res) {
   res.render('profilefac');
 });
 
+   
  app.post('/facimage' ,upload.single('image'), function(req,res){
   Faculty.findOne({id: req.params.id})
   .then(function(user2){
@@ -170,7 +171,7 @@ app.get("/", (req, res) => {
 
 
 app.get("/admin", (req, res) => {
-   res.render("admin")
+  res.render("admin")
 });
 //login logic for Faculty
 //login logic for Hod
@@ -195,7 +196,7 @@ app.post("/faculty/register", (req, res) => {
     var password = req.body.password;
     var password2 = req.body.password2;
     var department = req.body.department;
-    
+
     // var image = req.body.image;
     //validation
     req.checkBody("name", "name is required").notEmpty();
@@ -223,12 +224,18 @@ app.post("/faculty/register", (req, res) => {
         // image: image
       });
       Faculty.createFaculty(newFaculty, (err, faculty) => {
-        if (err) throw err;
-        console.log(faculty);
-      });
-      req.flash("success", "you are registered successfully,now you can login");
-
-      res.redirect("/faculty/login");
+        if (err) {
+          if (err.code === 11000) { // This code indicates a duplicate key error
+            req.flash('error', 'Username already taken');
+            res.redirect('/faculty/register');
+          } else {
+            throw err;
+          }
+        } else {
+          req.flash("success", "you are registered successfully,now you can login");
+          res.redirect("/faculty/login");
+        }
+      });    
     }
   } else if (type == "hod") {
     var name = req.body.name;
@@ -259,12 +266,18 @@ app.post("/faculty/register", (req, res) => {
         // image: image
       });
       Hod.createHod(newHod, (err, hod) => {
-        if (err) throw err;
-        console.log(hod);
+        if (err) {
+          if (err.code === 11000) { // This code indicates a duplicate key error
+            req.flash('error', 'Username already taken');
+            res.redirect('/hod/register');
+          } else {
+            throw err;
+          }
+        } else {
+          req.flash("success", "you are registered successfully,now you can login");
+          res.redirect("/hod/login");
+        }
       });
-      req.flash("success", "you are registered successfully,now you can login");
-
-      res.redirect("/hod/login");
     }
   } else if (type == "principal") {
     var name = req.body.name;
@@ -294,12 +307,18 @@ app.post("/faculty/register", (req, res) => {
         image: image
       });
       Principal.createPrincipal(newPrincipal, (err, principal) => {
-        if (err) throw err;
-        console.log(principal);
+        if (err) {
+          if (err.code === 11000) { // This code indicates a duplicate key error
+            req.flash('error', 'Username already taken');
+            res.redirect('/principal/register');
+          } else {
+            throw err;
+          }
+        } else {
+          req.flash("success", "you are registered successfully,now you can login");
+          res.redirect("/principal/login");
+        }
       });
-      req.flash("success", "you are registered successfully,now you can login");
-
-      res.redirect("/principal/login");
     }
   }
 });
@@ -375,27 +394,27 @@ passport.use(
 
 //serialize
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   // console.log(user.id);
   done(null, { id: user.id, type: user.type });
 });
 
 //deserialize
 
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function (obj, done) {
   switch (obj.type) {
     case "faculty":
-      Faculty.getUserById(obj.id, function(err, faculty) {
+      Faculty.getUserById(obj.id, function (err, faculty) {
         done(err, faculty);
       });
       break;
     case "hod":
-      Hod.getUserById(obj.id, function(err, hod) {
+      Hod.getUserById(obj.id, function (err, hod) {
         done(err, hod);
       });
       break;
     case "principal":
-      Principal.getUserById(obj.id, function(err, principal) {
+      Principal.getUserById(obj.id, function (err, principal) {
         done(err, principal);
       });
       break;
@@ -522,7 +541,7 @@ app.post("/faculty/:id/apply", (req, res) => {
           } else {
             newLeave.stud.id = req.user._id;
             newLeave.stud.username = req.user.username;
-            console.log("leave is applied by--" + req.user.username);    
+            console.log("leave is applied by--" + req.user.username);
             // console.log(newLeave.from);
             newLeave.save();
             faculty.leaves.push(newLeave);
@@ -542,7 +561,7 @@ app.get("/faculty/:id/track", (req, res) => {
         req.flash("error", "No faculty with requested id");
         res.redirect("back");
       } else {
-        
+
         res.render("trackLeave", { faculty: foundStud, moment: moment });
       }
     });
@@ -691,7 +710,7 @@ app.post("/hod/:id/leave/:stud_id/info", (req, res) => {
             res.redirect("back");
           } else {
             if (req.body.action === "Approve") {
-              foundFaculty.leaves.forEach(function(leave) {
+              foundFaculty.leaves.forEach(function (leave) {
                 if (leave.status === "pending") {
                   leave.status = "approved";
                   leave.approved = true;
@@ -700,7 +719,7 @@ app.post("/hod/:id/leave/:stud_id/info", (req, res) => {
               });
             } else {
               console.log("u denied");
-              foundFaculty.leaves.forEach(function(leave) {
+              foundFaculty.leaves.forEach(function (leave) {
                 if (leave.status === "pending") {
                   leave.status = "denied";
                   leave.denied = true;
@@ -844,7 +863,7 @@ app.post("/principal/:id/leave/:stud_id/info", (req, res) => {
           } else {
             //TODO: Fix this error get id with approve req and findById and update leave.principalstatus = "approved" do not use forEach
             if (req.body.action === "Approve") {
-              foundFaculty.leaves.forEach(function(leave) {
+              foundFaculty.leaves.forEach(function (leave) {
                 if (leave.principalstatus === "pending") {
                   leave.principalstatus = "approved";
                   leave.save();
@@ -852,7 +871,7 @@ app.post("/principal/:id/leave/:stud_id/info", (req, res) => {
               });
             } else {
               console.log("u denied");
-              foundFaculty.leaves.forEach(function(leave) {
+              foundFaculty.leaves.forEach(function (leave) {
                 if (leave.principalstatus === "pending") {
                   leave.principalstatus = "denied";
 
