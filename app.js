@@ -102,7 +102,7 @@ app.post('/image' ,upload.single('image'), function(req,res){
    user2.image= req.file.filename;
    user2.save()
   .then(function(){
-    res.send(" fac done")
+    res.redirect("/faculty/home")
   })
  })
  });
