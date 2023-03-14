@@ -92,6 +92,22 @@ app.post('/image' ,upload.single('image'), function(req,res){
  })
  });
 
+ app.get('/facimage', function(req, res) {
+  res.render('profilefac');
+});
+
+ app.post('/facimage' ,upload.single('image'), function(req,res){
+  Faculty.findOne({id: req.params.id})
+  .then(function(user2){
+   user2.image= req.file.filename;
+   user2.save()
+  .then(function(){
+    res.send(" fac done")
+  })
+ })
+ });
+
+
 // passport.use(new LocalStrategy(Faculty.authenticate()));
 // passport.use(
 //   new LocalStrategy(function(username, password, done) {
