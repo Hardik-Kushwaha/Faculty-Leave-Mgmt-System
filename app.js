@@ -11,6 +11,7 @@ var express = require("express"),
   flash = require("connect-flash"),
   Faculty = require("./models/faculty"),
   Accounts = require("./models/accounts"),
+  Principal = require("./models/principal"),
   Hod = require("./models/hod"),
   Leave = require("./models/leave");
   require('dotenv').config;
@@ -301,6 +302,42 @@ app.post("/faculty/register", (req, res) => {
       res.redirect("/accounts/login");
     }
   }
+  else if (type == "principal") {
+    var name = req.body.name;
+    var username = req.body.username;
+    var password = req.body.password;
+    var password2 = req.body.password2;
+
+    var image = req.body.image;
+
+    req.checkBody("name", "Name is required").notEmpty();
+    req.checkBody("username", "Username is required").notEmpty();
+    req.checkBody("password", "password is required").notEmpty();
+    req.checkBody("password2", "Password dont match").equals(req.body.password);
+
+    var errors = req.validationErrors();
+    if (errors) {
+      res.render("register", {
+        errors: errors
+      });
+    } else {
+      var newPrincipal = new Principal({
+        name: name,
+        username: username,
+        password: password,
+
+        type: type,
+        image: image
+      });
+      Principal.createPrincipal(newPrincipal, (err, principal) => {
+        if (err) throw err;
+        console.log(principal);
+      });
+      req.flash("success", "you are registered successfully,now you can login");
+
+      res.redirect("/principal/login");
+    }
+  }
 });
 
 //stratergies
@@ -371,8 +408,30 @@ passport.use(
     });
   })
 );
-
-//srialize
+passport.use(
+  "principal",
+  new LocalStrategy((username, password, done) => {
+    Principal.getUserByUsername(username, (err, principal) => {
+      if (err) throw err;
+      if (!principal) {
+        return done(null, false, { message: "Unknown User" });
+      }
+      Principal.comparePassword(
+        password,
+        principal.password,
+        (err, passwordFound) => {
+          if (err) throw err;
+          if (passwordFound) {
+            return done(null, principal);
+          } else {
+            return done(null, false, { message: "Invalid Password" });
+          }
+        }
+      );
+    });
+  })
+);
+//serialize
 
 passport.serializeUser(function(user, done) {
   // console.log(user.id);
@@ -398,6 +457,10 @@ passport.deserializeUser(function(obj, done) {
         done(err, accounts);
       });
       break;
+      case "principal":
+        Principal.getUserById(obj.id, function(err, principal) {
+        done(err, principal);
+      });
     default:
       done(new Error("no entity type:", obj.type), null);
       break;
@@ -761,7 +824,7 @@ app.get("/accounts/:id", ensureAuthenticated, (req, res) => {
 });
 app.get("/accounts/:id/edit", ensureAuthenticated, (req, res) => {
   Accounts.findById(req.params.id, (err, foundAccounts) => {
-    res.render("editW", { accounts: foundAccounts });
+    res.render("editA", { accounts: foundAccounts });
   });
 });
 
@@ -866,6 +929,158 @@ app.post("/accounts/:id/leave/:stud_id/info", (req, res) => {
             res.render("Accountsmoreinfostud", {
               faculty: foundFaculty,
               accounts: accountsFound,
+              moment: moment
+            });
+          }
+        });
+    }
+  });
+});
+app.get("/principal/login", (req, res) => {
+  res.render("principallogin");
+});
+
+app.post(
+  "/principal/login",
+  passport.authenticate("principal", {
+    successRedirect: "/principal/home",
+    failureRedirect: "/principal/login",
+    failureFlash: true
+  }),
+  (req, res) => {
+    res.redirect("/principal/home");
+  }
+);
+app.get("/principal/home", ensureAuthenticated, (req, res) => {
+  Principal.find({}, (err, hod) => {
+    if (err) {
+      console.log("err");
+    } else {
+      res.render("homeprincipal", {
+        principal: req.user
+      });
+    }
+  });
+});
+
+app.get("/principal/:id", ensureAuthenticated, (req, res) => {
+  console.log(req.params.id);
+  Principal.findById(req.params.id).exec((err, foundPrincipal) => {
+    if (err || !foundPrincipal) {
+      req.flash("error", "Principal not found");
+      res.redirect("back");
+    } else {
+      res.render("profileprincipal", { principal: foundPrincipal });
+    }
+  });
+});
+app.get("/principal/:id/edit", ensureAuthenticated, (req, res) => {
+  Principal.findById(req.params.id, (err, foundPrincipal) => {
+    res.render("editP", { principal: foundPrincipal });
+  });
+});
+
+app.put("/principal/:id", ensureAuthenticated, (req, res) => {
+  console.log(req.body.principal);
+  Principal.findByIdAndUpdate(
+    req.params.id,
+    req.body.principal,
+    (err, updatedPrincipal) => {
+      if (err) {
+        req.flash("error", err.message);
+        res.redirect("back");
+      } else {
+        req.flash("success", "Succesfully updated");
+        res.redirect("/principal/" + req.params.id);
+      }
+    }
+  );
+});
+
+app.get("/principal/:id/leave", (req, res) => {
+  Principal.findById(req.params.id).exec((err, principalFound) => {
+    if (err) {
+      req.flash("error", "hod not found with requested id");
+      res.redirect("back");
+    } else {
+      // console.log(hodFound);
+      Faculty.find()
+        .populate("leaves")
+        .exec((err, facultys) => {
+          if (err) {
+            req.flash("error", "faculty not found with your department");
+            res.redirect("back");
+          } else {
+            res.render("principalLeaveSign", {
+              principal: principalFound,
+              facultys: facultys,
+
+              moment: moment
+            });
+          }
+        });
+    }
+  });
+});
+app.get("/principal/:id/leave/:stud_id/info", (req, res) => {
+  Principal.findById(req.params.id).exec((err, principalFound) => {
+    if (err) {
+      req.flash("error", "principal not found with requested id");
+      res.redirect("back");
+    } else {
+      Faculty.findById(req.params.stud_id)
+        .populate("leaves")
+        .exec((err, foundFaculty) => {
+          if (err) {
+            req.flash("error", "faculty not found with this id");
+            res.redirect("back");
+          } else {
+            res.render("Principalmoreinfostud", {
+              faculty: foundFaculty,
+              principal: principalFound,
+              moment: moment
+            });
+          }
+        });
+    }
+  });
+});
+
+app.post("/principal/:id/leave/:stud_id/info", (req, res) => {
+  Principal.findById(req.params.id).exec((err, principalFound) => {
+    if (err) {
+      req.flash("error", "principal not found with requested id");
+      res.redirect("back");
+    } else {
+      Faculty.findById(req.params.stud_id)
+        .populate("leaves")
+        .exec((err, foundFaculty) => {
+          if (err) {
+            req.flash("error", "faculty not found with this id");
+            res.redirect("back");
+          } else {
+            //TODO: Fix this error get id with approve req and findById and update leave.principalstatus = "approved" do not use forEach
+            if (req.body.action === "Approve") {
+              foundFaculty.leaves.forEach(function(leave) {
+                if (leave.principalstatus === "pending") {
+                  leave.principalstatus = "approved";
+
+                  leave.save();
+                }
+              });
+            } else {
+              console.log("u denied");
+              foundFaculty.leaves.forEach(function(leave) {
+                if (leave.principalstatus === "pending") {
+                  leave.principalstatus = "denied";
+
+                  leave.save();
+                }
+              });
+            }
+            res.render("Principalmoreinfostud", {
+              faculty: foundFaculty,
+              principal: principalFound,
               moment: moment
             });
           }

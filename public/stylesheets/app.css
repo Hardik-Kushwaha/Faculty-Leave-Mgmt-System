@@ -148,3 +148,6 @@ li a:hover {
   border-bottom: 2px solid rgb(9, 1, 19);
 }
 
+.col-sm-4 {
+  text-align: left;
+}

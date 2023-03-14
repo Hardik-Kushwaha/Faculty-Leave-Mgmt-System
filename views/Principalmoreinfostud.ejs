@@ -7,11 +7,12 @@
     margin-top: 80px;  text-align: -webkit-center;"
 >
   <form
-    action="/accounts/<%=accounts.id%>/leave/<%=faculty.id%>/info"
+    action="/principal/<%=principal.id%>/leave/<%=faculty.id%>/info"
     method="POST"
   >
     <div
       class="container-fluid bg-3 text-center"
+      style="border: 2px solid rgb(88, 88, 150)"
     >
       <h1><%=faculty.name %></h1>
       <br />
@@ -24,21 +25,14 @@
           />
         </div>
         <%faculty.leaves.forEach(function(leave){%>
-        <div class="col-sm-4" style="width: 100%;
-                              border: 1px;
-                              padding-left: 20px;
-                              padding-top: 20px;
-                              padding-bottom: 20px;
-                              border-color: rgb(230, 230, 230);
-                              border-radius: 30px;
-                              border-style: ridge;
-                              margin: 0px;">
-          <h4><strong>Subject:</strong> <%=leave.subject %></h4>
-          <h5>Status: <%=leave.accountsstatus %></h5>
-          <h5>From: <%=moment(leave.from).format('DD/MM/YYYY') %></h5>
-          <h5>To: <%=moment(leave.to).format('DD/MM/YYYY') %></h5>
-          <h5>Total Days: <%=leave.days%></h5>
-          <h5>Department: <%=faculty.department %></h5>
+        <div class="col-sm-4">
+          <h3><strong> Subject:</strong><%=leave.subject %></h3>
+          <h3>Status:<%=leave.principalstatus %></h3>
+          <h3>From:<%=moment(leave.to).format('DD/MM/YYYY') %></h3>
+          <h3>To:<%=moment(leave.from).format('DD/MM/YYYY') %></h3>
+          <h3><%=leave.days%></h3>
+
+          <h3>Department:<%=faculty.department %></h3>
           <div style="float:inherit">
             <input
               type="submit"
@@ -52,11 +46,11 @@
               name="action"
               value="Decline"
             />
+            <a href="/principal/home">Back</a>
           </div>
         </div>
-        
+
         <%})%>
-        <a href="/accounts/<%=accounts._id%>/leave">Back</a>
       </div>
     </div>
   </form>
