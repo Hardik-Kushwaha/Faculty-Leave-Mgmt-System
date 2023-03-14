@@ -87,7 +87,7 @@ app.post('/image' ,upload.single('image'), function(req,res){
    user2.image= req.file.filename;
    user2.save()
   .then(function(){
-    res.send("done")
+   res.redirect('back');
   })
  })
  });
@@ -195,7 +195,8 @@ app.post("/faculty/register", (req, res) => {
     var password = req.body.password;
     var password2 = req.body.password2;
     var department = req.body.department;
-    var image = req.body.image;
+    
+    // var image = req.body.image;
     //validation
     req.checkBody("name", "name is required").notEmpty();
     req.checkBody("username", "Username is required").notEmpty();
@@ -219,7 +220,7 @@ app.post("/faculty/register", (req, res) => {
         department: department,
 
         type: type,
-        image: image
+        // image: image
       });
       Faculty.createFaculty(newFaculty, (err, faculty) => {
         if (err) throw err;
@@ -521,13 +522,10 @@ app.post("/faculty/:id/apply", (req, res) => {
           } else {
             newLeave.stud.id = req.user._id;
             newLeave.stud.username = req.user.username;
-            console.log("leave is applied by--" + req.user.username);
-
+            console.log("leave is applied by--" + req.user.username);    
             // console.log(newLeave.from);
             newLeave.save();
-
             faculty.leaves.push(newLeave);
-
             faculty.save();
             req.flash("success", "Successfully applied for leave");
             res.render("homestud", { faculty: faculty, moment: moment });

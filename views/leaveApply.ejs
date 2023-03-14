@@ -10,13 +10,25 @@ margin-top: -181px;  text-align: -webkit-center;"
   <h1>Apply for leave here <%=faculty.name%></h1>
   <form action="/faculty/<%=faculty._id%>/apply" method="POST">
     <div class="form-group">
-      <input
+       <input
         type="text"
         placeholder="subject"
         name="leave[subject]"
         class="form-control"
-      />
+      /> 
+
     </div>
+    <div>
+    <input type="radio" id="l1" name="type" value="cl" />
+    CL
+    <input type="radio" id="l2" name="type" value="el" />
+                   EL
+    <input type="radio" id="l3" name="type" value="od" />
+    OD
+    <input type="radio" id="l4" name="type" value="ml" />
+    ML
+  </div>
+    
     <div class="form-group">
       <label for="from">From:</label>
       <input

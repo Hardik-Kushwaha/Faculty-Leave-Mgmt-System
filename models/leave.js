@@ -28,6 +28,22 @@ var leaveSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    ol : {
+      type : Number,
+      default : 10
+    },
+    dl : {
+      type : Number,
+      default : 10
+    },
+    ml : {
+      type : Number,
+      default : 10
+    },
+    cd:{
+      type : Number,
+      default : 10
+    },
     stud: {
       id: {
         type: mongoose.Schema.Types.ObjectId,
