@@ -32,13 +32,11 @@
   var color = (matchedOrNot == "Password matched") ? "green" : "red";
   document.getElementById("toggleconfirmPassword").className = color;
   document.getElementById("toggleconfirmPassword").innerHTML = matchedOrNot;
-
-  var pass1 = document.getElementById('pass1');
-    var pass2 = document.getElementById('pass2');
+    var pass1 = document.getElementById('password');
+    var pass2 = document.getElementById('cpassword');
     var message = document.getElementById('error-nwl');
     var goodColor = "#66cc66";
     var badColor = "#ff6666";
- 	
     if(pass1.value.length > 5)
     {
         pass1.style.backgroundColor = goodColor;
