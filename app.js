@@ -96,16 +96,17 @@ app.get('/facimage', function (req, res) {
   res.render('profilefac');
 });
 
-app.post('/facimage', upload.single('image'), function (req, res) {
-  Faculty.findOne({ id: req.params.id })
-    .then(function (user2) {
-      user2.image = req.file.filename;
-      user2.save()
-        .then(function () {
-          res.send(" fac done")
-        })
-    })
-});
+   
+ app.post('/facimage' ,upload.single('image'), function(req,res){
+  Faculty.findOne({id: req.params.id})
+  .then(function(user2){
+   user2.image= req.file.filename;
+   user2.save()
+  .then(function(){
+    res.redirect("/faculty/home")
+  })
+ })
+ });
 
 
 // passport.use(new LocalStrategy(Faculty.authenticate()));
