@@ -195,7 +195,7 @@ app.post("/faculty/register", (req, res) => {
     var password = req.body.password;
     var password2 = req.body.password2;
     var department = req.body.department;
-    var image = req.body.image;
+    // var image = req.body.image;
     //validation
     req.checkBody("name", "name is required").notEmpty();
     req.checkBody("username", "Username is required").notEmpty();
@@ -219,7 +219,7 @@ app.post("/faculty/register", (req, res) => {
         department: department,
 
         type: type,
-        image: image
+        // image: image
       });
       Faculty.createFaculty(newFaculty, (err, faculty) => {
         if (err) throw err;

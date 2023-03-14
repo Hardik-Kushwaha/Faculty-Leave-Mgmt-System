@@ -19,7 +19,6 @@ var facultySchema = new mongoose.Schema({
 });
 facultySchema.plugin(passportLocalMongoose);
 var Faculty = (module.exports = mongoose.model("Faculty", facultySchema));
-
 module.exports.createFaculty = function(newFaculty, callback) {
   bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(newFaculty.password, salt, function(err, hash) {
