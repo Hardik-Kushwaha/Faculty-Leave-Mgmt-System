@@ -507,6 +507,17 @@ app.put("/faculty/:id", ensureAuthenticated, (req, res) => {
 //     res.redirect("back");
 //   }
 // });
+app.get("/faculty/:id/apply", ensureAuthenticated, (req, res) => {
+  Faculty.findById(req.params.id, (err, foundStud) => {
+    if (err) {
+      console.log(err);
+      res.redirect("back");
+    } else {
+      res.render("leaveApply", { faculty: foundStud });
+    }
+  });
+});
+
 // apply leave route
 app.post("/faculty/:id/apply",  (req, res) => { 
   Faculty.findById(req.params.id)
@@ -519,7 +530,6 @@ app.post("/faculty/:id/apply",  (req, res) => {
         todate = new Date(req.body.leave.to);
         today = new Date();
        
-        
         // check if date is in the past
         if (date < today) {
           req.flash("error", "Leave date cannot be in the past");
@@ -582,6 +592,7 @@ app.post("/faculty/:id/apply",  (req, res) => {
       }
     });
 });
+
 // app.post("/faculty/:id/apply", async (req, res) => {
 //   try {
 //     const faculty = await Faculty.findById(req.params.id).populate("leaves").exec();
