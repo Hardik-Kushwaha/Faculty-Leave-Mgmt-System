@@ -508,19 +508,6 @@ app.put("/faculty/:id", ensureAuthenticated, (req, res) => {
   );
 });
 
-// app.get("/faculty/:id/apply", ensureAuthenticated, async (req, res) => {
-//   try {
-//     const [faculty, allFaculties] = await Promise.all([
-//       Faculty.findById(req.params.id).populate("leaves"),
-//       Faculty.find({}).select("name _id"),
-//     ]);
-
-//     res.render("facultyDetails", { faculty, allFaculties });
-//   } catch (err) {
-//     console.error(err);
-//     res.redirect("back");
-//   }
-// });
 app.get("/faculty/:id/apply", ensureAuthenticated, (req, res) => {
   Faculty.findById(req.params.id, (err, foundStud) => {
     if (err) {
@@ -531,9 +518,7 @@ app.get("/faculty/:id/apply", ensureAuthenticated, (req, res) => {
     }
   });
 });
-
-// apply leave route
-app.post("/faculty/:id/apply",  (req, res) => { 
+app.post("/faculty/:id/apply", (req, res) => {
   Faculty.findById(req.params.id)
     .populate("leaves")
     .exec((err, faculty) => {
@@ -543,7 +528,7 @@ app.post("/faculty/:id/apply",  (req, res) => {
         date = new Date(req.body.leave.from);
         todate = new Date(req.body.leave.to);
         today = new Date();
-       
+
         // check if date is in the past
         if (date < today) {
           req.flash("error", "Leave date cannot be in the past");
@@ -599,79 +584,11 @@ app.post("/faculty/:id/apply",  (req, res) => {
             faculty.save();
             req.flash("success", "Successfully applied for leave");
             res.render("homestud", { faculty: faculty, moment: moment });
-            console.log(faculty);
           }
         });
       }
     });
 });
-
-// app.post("/faculty/:id/apply", async (req, res) => {
-//   try {
-//     const faculty = await Faculty.findById(req.params.id).populate("leaves").exec();
-//     if (!faculty) {
-//       res.redirect("/faculty/home");
-//       return;
-//     }
-//     const allFaculies = await Faculty.find().select("name _id");
-
-//     const date = new Date(req.body.leave.from);
-//     const todate = new Date(req.body.leave.to);
-//     const today = new Date();
-
-//     // check if date is in the past
-//     if (date < today) {
-//       req.flash("error", "Leave date cannot be in the past");
-//       res.redirect("back");
-//       return;
-//     }
-
-//     const year = date.getFullYear();
-//     const month = date.getMonth() + 1;
-//     let dt = date.getDate();
-//     const todt = todate.getDate();
-//     if (dt < 10) {
-//       dt = "0" + dt;
-//     }
-//     if (month < 10) {
-//       month = "0" + month;
-//     }
-//     console.log(todt - dt);
-//     req.body.leave.days = todt - dt;
-//     console.log(year + "-" + month + "-" + dt);
-//     switch (req.body.leave.type) {
-//       case "ol":
-//         faculty.leaveCounts.ol -= req.body.leave.days;
-//         break;
-//       case "dl":
-//         faculty.leaveCounts.dl -= req.body.leave.days;
-//         break;
-//       case "ml":
-//         faculty.leaveCounts.ml -= req.body.leave.days;
-//         break;
-//       case "cd":
-//         faculty.leaveCounts.cd -= req.body.leave.days;
-//         break;
-//       default:
-//         break;
-//     }
-
-//     const newLeave = new Leave(req.body.leave);
-//     newLeave.stud.id = req.user._id;
-//     newLeave.stud.username = req.user.username;
-//     console.log("leave is applied by--" + req.user.username);
-//     await newLeave.save();
-//     faculty.leaves.push(newLeave);
-//     await faculty.save();
-//     req.flash("success", "Successfully applied for leave");
-//     res.render("homestud", { faculty: faculty, moment: moment });
-//   } catch (err) {
-//     console.error(err);
-//     req.flash("error", "Something went wrong");
-//     res.redirect("back");
-//   }
-// });
-
 
 app.get("/faculty/:id/track", (req, res) => {
   Faculty.findById(req.params.id)
