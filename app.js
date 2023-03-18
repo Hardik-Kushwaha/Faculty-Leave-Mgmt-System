@@ -96,17 +96,31 @@ app.get('/facimage', function (req, res) {
   res.render('profilefac');
 });
 
-   
- app.post('/facimage' ,upload.single('image'), function(req,res){
-  Faculty.findOne({id: req.params.id})
-  .then(function(user2){
-   user2.image= req.file.filename;
-   user2.save()
-  .then(function(){
-    res.redirect("/faculty/home")
-  })
- })
- });
+app.post('/facimage', upload.single('image'), function (req, res) {
+  Faculty.findOne({ id: req.params.id })
+    .then(function (user2) {
+      user2.image = req.file.filename;
+      user2.save()
+        .then(function () {
+          res.redirect("/faculty/home");
+        })
+    })
+});
+
+app.get('/priimage', function (req, res) {
+  res.render('profilepicprincipal');
+});
+
+app.post('/priimage', upload.single('image'), function (req, res) {
+  Principal.findOne({ id: req.params.id })
+    .then(function (user3) {
+      user3.image = req.file.filename;
+      user3.save()
+        .then(function () {
+          res.redirect("/principal/home")
+        })
+    })
+});
 
 
 // passport.use(new LocalStrategy(Faculty.authenticate()));
@@ -285,7 +299,7 @@ app.post("/faculty/register", (req, res) => {
     var password = req.body.password;
     var password2 = req.body.password2;
 
-    var image = req.body.image;
+    // var image = req.body.image;
 
     req.checkBody("name", "Name is required").notEmpty();
     req.checkBody("username", "Username is required").notEmpty();
@@ -304,7 +318,7 @@ app.post("/faculty/register", (req, res) => {
         password: password,
 
         type: type,
-        image: image
+       // image: image
       });
       Principal.createPrincipal(newPrincipal, (err, principal) => {
         if (err) {
@@ -536,11 +550,10 @@ app.post("/faculty/:id/apply",  (req, res) => {
           res.redirect("back");
           return;
         }
-
         year = date.getFullYear();
         month = date.getMonth() + 1;
         dt = date.getDate();
-        todt = todate.getDate();
+        todt = todate.getDate()+1;
         if (dt < 10) {
           dt = "0" + dt;
         }
@@ -556,17 +569,17 @@ app.post("/faculty/:id/apply",  (req, res) => {
         // from.toISOString().substring(0, 10);
         // console.log("from date:", strDate);
         switch (req.body.leave.type) {
-          case "ol":
-            faculty.leaveCounts.ol -= req.body.leave.days;
+          case "od":
+            faculty.leaveCounts.od -= req.body.leave.days;
             break;
-          case "dl":
-            faculty.leaveCounts.dl -= req.body.leave.days;
+          case "el":
+            faculty.leaveCounts.el -= req.body.leave.days;
             break;
           case "ml":
             faculty.leaveCounts.ml -= req.body.leave.days;
             break;
-          case "cd":
-            faculty.leaveCounts.cd -= req.body.leave.days;
+          case "cl":
+            faculty.leaveCounts.cl -= req.body.leave.days;
             break;
           default:
             break;

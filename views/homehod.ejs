@@ -4,8 +4,10 @@
     max-width: 50%;
     margin-left: 431px;
     margin-top: -165px; text-align: -webkit-center;">
+    <div id="main" style="width: 60vh; height: 60vh; border: 4px solid grey; box-shadow: 10px 5px 5px rgb(169, 83, 83);">
       <div class="thumbnail">
-        <img style="height:150px;width:150px;border-radius: 100%" src="../images/uploads/<%=hod.image%>" />
+        <img   style="height:150px;width:150px;border-radius:100%; border: 2px solid rgb(16, 15, 15); " src="../images/uploads/<%=hod.image%>" />
+        <hr>
         <h1><strong>Name:</strong> <%=hod.name%></h1>
         <h4><strong>Type:</strong> <%=hod.type%></h4>
 
@@ -13,7 +15,7 @@
         <h4>Department:<%=hod.department%></h4>
       </div>
     </div>
-
+  </div>
     <% include ./partial/footer %>
   </div>
 </div>

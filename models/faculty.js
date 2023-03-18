@@ -20,11 +20,11 @@ var facultySchema = new mongoose.Schema({
     }
   ],
   leaveCounts: {
-    ol: {
+    od: {
       type: Number,
       default: 10
     },
-    dl: {
+    el: {
       type: Number,
       default: 10
     },
@@ -32,7 +32,7 @@ var facultySchema = new mongoose.Schema({
       type: Number,
       default: 10
     },
-    cd: {
+    cl: {
       type: Number,
       default: 10
     }
