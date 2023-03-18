@@ -12,7 +12,6 @@ var facultySchema = new mongoose.Schema({
   },
   password: String,
   department: String,
-  hostel: String,
   image: String,
   leaves: [
     {
