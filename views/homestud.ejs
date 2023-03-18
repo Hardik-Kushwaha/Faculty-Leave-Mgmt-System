@@ -7,22 +7,24 @@ max-width: 60%;
 margin-left: 431px;
 margin-top: -220px;  text-align: -webkit-center;"
 >
-
+  <div id="main" style="width: 60vh; height: 60vh; border: 4px solid grey; box-shadow: 10px 5px 5px rgb(169, 83, 83);">
       <div class="thumbnail">
         <img
-          style="height:150px;width:150px;border-radius:100%"
+          style="height:150px;width:150px;border-radius:100%; border: 2px solid rgb(16, 15, 15); "
           src="../images/uploads/<%=faculty.image%>"
         />
+        <hr>
         <h1><strong>Name:</strong> <%=faculty.name%></h1>
+      
         <h4><strong>Type:</strong> <%=faculty.type%></h4>
 
         <h4>Username: <%=faculty.username%></h4>
         <h4>Department: <%=faculty.department%></h4>
       </div>
     </div>
-
+  </div>
     <div class="container" >
-      <table class="content-table"
+      <!-- <table class="content-table"
       style="margin: 50px auto;min-width:400px;width: 90%; box-shadow: 0 0 20px rgba(0,0,0,0.15);">
         <tr  style="background-color: rgb(9, 1, 19); border-radius: 5px 5px 0 0;overflow: hidden;  color: #ffffff;text-align: left; font-weight: bold;"
         >
@@ -47,7 +49,7 @@ margin-top: -220px;  text-align: -webkit-center;"
         </tr>
 
         <%})%>
-      </table>
+      </table> -->
     </div>
 
     <% include ./partial/footer %>
